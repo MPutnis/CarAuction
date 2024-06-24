@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
         $cars->each(function ($car) use ($users) {
             // assign random user to each auction
             $user = $users->random();
-
+            $car->user_id = $user->id;
+            
             $auction = Auctions::factory()->create([
-                'user_id' => $user->id,
                 'car_id' => $car->id,
             ]);
             
