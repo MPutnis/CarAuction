@@ -1,36 +1,76 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Car Auction')</title>
+    @vite('resources/css/app.css')
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-blue-600 p-4 text-white">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="{{ url('/') }}" class="text-lg font-semibold">Car Auction</a>
+                <div>
+                    <a href="{{ route('auctions.create') }}" class="mr-4">Sell Your Car</a>
+                    <a href="{{ route('auctions.index') }}" class="mr-4">Auctions</a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="mr-4">Dashboard</a>
+                        <a href="{{ route('profile.edit') }}" class="mr-4">Profile</a>
+                        <a href="{{ route('logout') }}"
+                           onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="mr-4">Login</a>
+                        <a href="{{ route('register') }}">Register</a>
+                    @endauth
+                </div>
+            </div>
+        </nav>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <div class="flex flex-1 w-full justify-between">
+            <!-- Sidebar -->
+            <aside class="w-1/10 bg-gray-800 text-white p-4 hidden md:block">
+                
+            </aside>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+            <!-- Main Content -->
+            <main class="flex-1 p-6">
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
                     </div>
-                </header>
-            @endisset
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
+                @endif
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @yield('content')
             </main>
+
+            <!-- Sidebar -->
+            <aside class="w-1/10 bg-gray-800 text-white p-4 lg:block hidden">
+                
+            </aside>
         </div>
-    </body>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white p-4">
+            <div class="container mx-auto text-center">
+                &copy; {{ date('Y') }} Car Auction. All rights reserved.
+            </div>
+        </footer>
+    </div>
+</body>
 </html>

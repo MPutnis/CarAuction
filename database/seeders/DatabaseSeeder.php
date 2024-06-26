@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Auctions;
+use App\Models\Auction;
 use App\Models\Car;
 use App\Models\Bid;
-use App\Models\Comments;
+use App\Models\Comment;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,27 +18,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = User::factory(10)->create();
-        $cars = Car::factory(10)->create();
+        $auctions = Auction::factory(10)->create();
         
-        $cars->each(function ($car) use ($users) {
-            // assign random user to each auction
-            $user = $users->random();
-            $car->user_id = $user->id;
+        $auctions->each(function ($auction) use ($users) {
             
-            $auction = Auctions::factory()->create([
-                'car_id' => $car->id,
+            Car::factory()->create([
+                'auction_id' => $auction->id,
             ]);
             
             // create bids
             Bid::factory(10)->create([
                 'user_id' => $users->random()->id, // random user for a bid
-                'auctions_id' => $auction->id,
+                'auction_id' => $auction->id,
             ]);
 
             // create comments
-            Comments::factory(10)->create([
+            Comment::factory(10)->create([
                 'user_id' => $users->random()->id, // random user for a comment
-                'auctions_id' => $auction->id,
+                'auction_id' => $auction->id,
             ]);
         });
     }

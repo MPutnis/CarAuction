@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user');
+            $table->boolean('isAdmin')->default(false);
             $table->string('credit_card_number')->nullable();
             $table->boolean('credit_card_verified')->default(false);
         });
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropColumn('isAdmin');
             $table->dropColumn('credit_card_number');
             $table->dropColumn('credit_card_verified');
         });

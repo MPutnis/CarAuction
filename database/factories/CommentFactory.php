@@ -4,13 +4,13 @@ namespace Database\Factories;
 
 use App\Models\Comments;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Auctions;
+use App\Models\Auction;
 use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comments>
  */
-class CommentsFactory extends Factory
+class CommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,7 +21,7 @@ class CommentsFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'auctions_id' => Auctions::factory(),
+            'auction_id' => Auction::factory(),
             'content' => $this->faker->sentence,
         ];
     }

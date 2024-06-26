@@ -14,6 +14,9 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            width: {
+                '1/10': '10%',
+            },
         },
     },
 

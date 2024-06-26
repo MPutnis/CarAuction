@@ -16,10 +16,16 @@ class CheckCreditCardVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->credit_card_verified) {
-            return $next($request);
+        $user = Auth::user();
+        
+        if (!$user) {
+            return redirect('login')->with('error', 'Please login to access this page.');
+        }
+
+        if (!$user->credit_card_verified) {
+            return redirect('/')->with('error', 'Please verify your credit card to access this page.');
         }
         
-        return redirect('/')->with('error', 'Please verify your credit card to access this page.');
+        return $next($request);
     }
 }

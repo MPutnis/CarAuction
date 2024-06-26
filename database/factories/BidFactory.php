@@ -5,7 +5,7 @@ namespace Database\Factories;
 
 use App\Models\Bid;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Auctions;
+use App\Models\Auction;
 use App\Models\User;
 
 /**
@@ -21,7 +21,7 @@ class BidFactory extends Factory
     public function definition(): array
     {
         return [
-            'auctions_id' => Auctions::factory(),
+            'auction_id' => Auction::factory(),
             'user_id' => User::factory(),
             'amount' => $this->faker->randomFloat(2, 1000, 100000),
         ];

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CarController extends Controller
 {
@@ -51,7 +54,33 @@ class CarController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'make' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'year' => 'required|integer|min:1900|max:' . date("Y"),
+            'reserve_price' => 'required|numeric|min:0',
+            'mileage' => 'required|integer|min:0',
+            'description' => 'required|string',
+        ]);
+        
+        DB::beginTransaction();
+        try{
+            $car = Car::findOrFail($id);
+            $car->make = $request->make;
+            $car->model = $request->model;
+            $car->year = $request->year;
+            $car->reserve_price = $request->reserve_price;
+            $car->mileage = $request->mileage;
+            $car->description = $request->description;
+            $car->save();
+            
+            DB::commit();
+            return redirect()->route('dashboard')->with('success', 'Car data updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withErrors('An error occurred while updating car data: ' . $e->getMessage());
+        }
     }
 
     /**

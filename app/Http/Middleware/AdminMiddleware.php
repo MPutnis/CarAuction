@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,6 +21,6 @@ class AdminMiddleware
             return $next($request);
         }
         
-        return redirect('/')->with('error', 'Unauthorized access'); // where to redirect non admins
+        return redirect('/')->with('error', 'You are not authorized to access this page.');
     }
 }

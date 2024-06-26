@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('auctions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('car_id')->constrained()->onDelete('cascade');
-            $table->timestamp('start_time');
-            $table->timestamp('end_time');
+            $table->enum('status', ['denied', 'pending', 'approved', 'finished'])
+                ->default('pending');
+            $table->timestamp('start_time')->nullable();
+            $table->timestamp('end_time')->nullable();
             $table->timestamps();
         });
     }

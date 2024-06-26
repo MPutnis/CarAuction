@@ -5,14 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
-    const ROLE_USER = 'user';
-    const ROLE_ADMIN = 'admin';
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'credit_card_number',
     ];
 
     /**
@@ -47,5 +45,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // spatie role trait
+    use HasRoles;
+
+    // users bids
+    public function bids()
+    {
+        return $this->hasMany(Bid::class);
+    }
+
+    // Auctions user has bid in
+    public function auction()
+    {
+        return $this->hasMany(Auction::class);
+    }
+
+    // user comments
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

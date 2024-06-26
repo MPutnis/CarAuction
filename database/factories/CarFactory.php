@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Car;
 use App\Models\User;
+use App\Models\Auction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,14 +20,13 @@ class CarFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'auction_id' => Auction::factory(),
             'make' => $this->faker->word,
             'model' => $this->faker->word,
             'year' => $this->faker->year,
             'reserve_price' => $this->faker->randomFloat(2, 1000, 100000),
             'mileage' => $this->faker->numberBetween(1, 999999),
             'description' => $this->faker->sentence,
-            'status' => $this->faker->randomElement([Car::STATUS_DENIED, Car::STATUS_APPROVED, Car::STATUS_PENDING]),
         ];
     }
 }
