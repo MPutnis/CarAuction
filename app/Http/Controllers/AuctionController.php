@@ -50,7 +50,7 @@ class AuctionController extends Controller
             return view('auctions.create');
         }
 
-        return redirect('/')->withErrors('You do not have permission to create an auction.');
+        return redirect()->back()->withErrors('You do not have permission to create an auction.');
         
     }
 
@@ -211,8 +211,15 @@ class AuctionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Auction $auctions)
+    public function destroy($id)
     {
-        //
+        $auction = Auction::findOrFail($id);
+
+        if ($auction->car) {
+            $auction->car->delete();
+        }
+        $auction->delete();
+
+        return redirect()->route('auctions.index')->with('success', 'Auction deleted successfully.');
     }
 }

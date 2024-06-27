@@ -9,9 +9,6 @@ use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 
-use App\Http\Middleware\CheckCreditCardVerified;
-use App\Http\Middleware\AdminMiddleware;
-
 Route::get('/', [AuctionController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -33,14 +30,16 @@ Route::get('/cars/{car}/edit', [CarController::class, 'edit'])
     ->middleware('auth')
     ->name('cars.edit'); 
 
-// Route::middleware(['auth', 'admin'])->group(function () {
-//     Route::post('/admin/approve-car/{car}', [AdminController::class, 'approveCarForAuction'])
-//         ->name('admin.approveCarForAuction');
-//     Route::post('/admin/deny-car/{car}', [AdminController::class, 'denyCarForAuction'])
-//         ->name('admin.denyCarForAuction');
-//     Route::post('/admin/finish-auction/{auction}', [AdminController::class, 'finishAuction'])
-//         ->name('admin.finishAuction');
-// });
+// route to place a bid
+Route::post('/auction/{$id}', [BidController::class, 'store'])
+    ->middleware('permission:post bid')
+    ->name('bids.store');
+
+// route to post a comment
+Route::post('/auction/{$id}', [CommentController::class, 'store'])
+    ->middleware('auth')
+    ->name('comments.store');
+
 
 Route::resource('auctions', AuctionController::class);
 // route for a single auction

@@ -61,5 +61,13 @@
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Car Data</button>
         </div>
     </form>
+
+    <form action="{{ route('auctions.destroy', $car->auction->id) }}" method="POST" class="mt-4" 
+        onsubmit="return confirm('Are you sure you want to delete this auction and its associated car?');"
+    >
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Delete Auction</button>
+    </form>
 </div>
 @endsection

@@ -3,6 +3,7 @@
         <div class="p-4">
             <a href="{{ route('auctions.show', $auction->id) }}" class="stretched-link text-blue-500 hover:underline">
                 <h2 class="text-2xl font-semibold">Car: {{ $auction->car->make }} {{ $auction->car->model }}</h2>
+                <h3 class="text-xl font-semibold">Highest Bid: {{$auction->bids->max('amount') ? $auction->bids->max('amount') : 0 }}</h3>
                 <p class="text-gray-700">Auction ID: {{ $auction->id }}</p>
                 <p class="text-gray-700">Seller: {{ $auction->user->name }}</p>
                 <p class="text-gray-700">
