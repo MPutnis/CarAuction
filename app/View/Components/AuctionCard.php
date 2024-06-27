@@ -15,8 +15,10 @@ class AuctionCard extends Component
      */
     public function __construct($auction, $auctionStatus)
     {
+        
         $this->auction = $auction;
         $this->auctionStatus = $auctionStatus;
+        
     }
 
     /**

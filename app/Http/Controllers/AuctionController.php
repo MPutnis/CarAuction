@@ -8,6 +8,7 @@ use App\Models\Auction;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -67,6 +68,7 @@ class AuctionController extends Controller
             'reserve_price' => 'required|numeric|min:0',
             'mileage' => 'required|integer|min:0',
             'description' => 'required|string',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -85,6 +87,16 @@ class AuctionController extends Controller
             $car->description = $request->description;
             $car->save();
             
+            if ($request->hasFile('images')) {
+                $imagePaths = [];
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('car_images', 'public');
+                    $imagePaths[] = $path;
+                }
+                $car->image_paths = json_encode($imagePaths);
+                $car->save();
+            }
+
             DB::commit();
             return redirect()->route('dashboard')->with('success', 'Auction created successfully.');
         } catch (\Exception $e) {
@@ -156,7 +168,7 @@ class AuctionController extends Controller
                     $startTime = Carbon::now()->toDateTimeString();
                 }
 
-                $aStatus = $rStatus;
+                $auction->status = $request->status;
                 $auction->start_time = $startTime;
                 $auction->end_time =  Carbon::parse($startTime)->addWeek()->toDateTimeString();
             

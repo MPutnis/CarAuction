@@ -8,14 +8,16 @@
         @if($auctions->isEmpty())
             <p class="text-gray-700">There are no auctions.</p>
         @else
-            @foreach($auctions as $auction)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                @foreach($auctions as $auction)
+                    
+                    <x-auction-card
+                        :auction="$auction"
+                        :auctionStatus="'approved'"
+                    />
                 
-                <x-auction-card
-                    :auction="$auction"
-                    :auctionStatus="'approved'"
-                />
-                
-            @endforeach
+                @endforeach
+            </div>  
         @endif
     </div>
 @endsection

@@ -15,7 +15,7 @@ class DashboardController extends Controller
 
         // Get user's auctions
         $userAuctions = $user->auction;
-        $bidAuctions = $user->bids;
+        $bidAuctions = $user->bids->pluck('auction')->unique('id');
         $allAuctions = Auction::all();
         
         return view('dashboard', [
