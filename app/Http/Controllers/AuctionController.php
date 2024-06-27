@@ -23,12 +23,16 @@ class AuctionController extends Controller
             $query->orderBy('created_at', 'desc');
         }])->get();
 
+        $heroAuction = Auction::where('status', 'approved')
+            ->orderBy('end_time', 'asc')
+            ->first();
+
         //last bid
         $auctions->each(function ($auction) {
             $auction->last_bid = $auction->bids->first();
         });
 
-        return view('auctions.index', compact('auctions'));
+        return view('auctions.index', compact('heroAuction','auctions'));
     }
 
     /**

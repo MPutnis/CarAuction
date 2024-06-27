@@ -56,6 +56,7 @@
                         </ul>
                     </div>
                 @endif
+                @yield('hero')
                 @yield('content')
             </main>
 
