@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'credit_card_number',
+        'credit_card_verified',
     ];
 
     /**

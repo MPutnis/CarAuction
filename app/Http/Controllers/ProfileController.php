@@ -26,15 +26,39 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $validatedData = $request->validated();
+
+        // Validate the credit card
+        if (isset($validatedData['credit_card_number'])) {
+            $creditCardVerified = $this->validateCreditCard($validatedData['credit_card_number']);
+            $validatedData['credit_card_verified'] = $creditCardVerified;
+        } else {
+            $creditCardVerified = false;
+            $user->credit_card_verified = false;
         }
 
-        $request->user()->save();
+        if ($creditCardVerified) {
+            $user->syncRoles(['userCCT']);
+        } else {
+            $user->syncRoles(['userCCF']);
+        }
+
+        $user->fill($validatedData);
+        
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+    private function validateCreditCard($creditCardNumber)
+    {
+        // if CCN is 16 digits, return true
+        return strlen($creditCardNumber) === 16;
     }
 
     /**

@@ -39,6 +39,16 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Credit Card Number -->
+        <div class="mt-4">
+            <x-input-label for="credit_card_number" :value="__('Credit Card Number')" />
+            <x-text-input id="credit_card_number" class="block mt-1 w-full" type="text" name="credit_card_number" :value="old('credit_card_number')"/>
+            <x-input-error :messages="$errors->get('credit_card')" class="mt-2" />
+        </div>
+
+        <!-- Hidden Credit Card Verified -->
+        <input type="hidden" name="credit_card_verified" value="false">
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

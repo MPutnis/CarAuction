@@ -47,6 +47,22 @@
             @endif
         </div>
 
+        <!-- Credit Card Number-->
+        <div>
+            <x-input-label for="credit_card_number" :value="__('Credit Card Number')" />
+            <x-text-input id="credit_card_number" name="credit_card_number" type="text" class="mt-1 block w-full" :value="old('credit_card_number', $user->credit_card_number)" autocomplete="cc-number" />
+            <x-input-error class="mt-2" :messages="$errors->get('credit_card_number')" />
+        </div>
+
+        <!-- Credit Card Verified (hidden) -->
+        <input type="hidden" name="credit_card_verified" value="{{ $user->credit_card_verified }}">
+        @if ($user->hasRole('userCCT')) 
+            <div>
+                <p class="text-sm mt-2 text-gray-800">
+                    {{ __('Your credit card is verified.') }}
+                </p>
+            </div>
+        @endif
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
