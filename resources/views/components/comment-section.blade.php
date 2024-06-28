@@ -2,12 +2,14 @@
 @if($comments->isEmpty())
     <p class="text-gray-500">No comments yet.</p>
 @else
-    <ul class="list-disc list-inside text-gray-700">
+    <ul class="list-inside list-none text-gray-700">
         @foreach($comments as $comment)
-            <li>
-                <p>{{ $comment->content }}</p>
-                <h5>By: {{ $comment->user->name }}</h5>
-                <h6>At: {{ $comment->created_at }}</h6>
+            <li class="border border-gray-300 p-2 mb-2">
+                <p class="border border-gray-300 p-2 mb-2">{{ $comment->content }}</p>
+                <div class="flex justify-between">
+                    <h5 class="">By: {{ $comment->user->name }}</h5>
+                    <h6>At: {{ $comment->created_at }}</h6>
+                </div>
             </li>
             @can('delete comment')
                 <form action="{{ route('comments.destroy', $comment->id) }}" method="POST"

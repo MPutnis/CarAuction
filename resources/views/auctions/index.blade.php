@@ -36,6 +36,36 @@
 
 @section('content')
     <div class="container mx-auto mt-5 mb-5">
+        <!-- Filter and Sort -->
+        <div class="flex justify-between items-center mb-4">
+            <!-- Filter -->
+            <div>
+                <form id="auction-filter" action="{{ route('auctions.index') }}" method="GET">
+                    <div class="flex items-center">
+                        <!-- Brand -->
+                        <select name="make" class="form-select mr-2">
+                            <option value="">Brand</option>
+                            
+                            @foreach($makes as $make)
+                                <option value="{{ $make }}">{{ $make }}</option>
+                            @endforeach
+                        </select>
+
+                        <!-- Model -->
+                        <select name="model" class="form-select mr-2">
+                            <option value="">Model</option>
+                            @foreach($models as $model)
+                                <option value="{{ $model }}">{{ $model }}</option>
+                            @endforeach
+                        </select>
+
+                        <!-- Submit and reset-->
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="reset" id="reset-button" class="btn btn-secondary ml-2">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <h1 class="text-3xl font-bold mb-4">Ongoing Auctions</h1>
         @if($auctions->isEmpty())
             <p class="text-gray-700">There are no auctions.</p>
@@ -52,4 +82,15 @@
             </div>  
         @endif
     </div>
+    {{-- reset filter --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('reset-button').addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent the default reset behavior
+                var form = document.getElementById('auction-filter');
+                form.reset(); // Reset the form fields
+                window.location.href = form.getAttribute('action'); // Redirect to the form action URL
+            });
+        });
+    </script>
 @endsection

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = User::factory(10)->create();
-        $auctions = Auction::factory(10)->create();
+        $auctions = Auction::factory(100)->create();
         
         $auctions->each(function ($auction) use ($users) {
             
@@ -27,16 +27,20 @@ class DatabaseSeeder extends Seeder
             ]);
             
             // create bids
-            Bid::factory(10)->create([
-                'user_id' => $users->random()->id, // random user for a bid
-                'auction_id' => $auction->id,
-            ]);
-
+            $users->random(10)->each(function ($user) use ($auction) {
+                Bid::factory()->create([
+                    'user_id' => $user->id, // Each bid from a different user
+                    'auction_id' => $auction->id,
+                ]);
+            });
+            
             // create comments
-            Comment::factory(10)->create([
-                'user_id' => $users->random()->id, // random user for a comment
-                'auction_id' => $auction->id,
-            ]);
+            $users->random(10)->each(function ($user) use ($auction) {
+                Comment::factory()->create([
+                    'user_id' => $user->id, // Each comment from a different user
+                    'auction_id' => $auction->id,
+                ]);
+            });
         });
     }
 }

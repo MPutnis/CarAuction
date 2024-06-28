@@ -11,28 +11,54 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class AuctionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
         $auctions = Auction::with(['car', 'user', 'bids' => function( $query) {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('created_at', 'asc');
         }])->get();
 
         $heroAuction = Auction::where('status', 'approved')
             ->orderBy('end_time', 'asc')
             ->first();
 
-        //last bid
-        $auctions->each(function ($auction) {
-            $auction->last_bid = $auction->bids->first();
-        });
+            $query = Auction::query()
+            ->where('status', 'approved')
+            ->with('car');
 
-        return view('auctions.index', compact('heroAuction','auctions'));
+        // Filter by make
+        if ($request->filled('make')) {
+            $query->whereHas('car', function ($q) use ($request) {
+                $q->where('make', $request->make);
+            });
+        }
+        // Filter by model
+        if ($request->filled('model')) {
+            $query->whereHas('car', function ($q) use ($request) {
+                $q->where('model', $request->model);
+            });
+        }
+        
+        $auctions = $query->get();
+
+        $makes = Car::whereHas('auction', function ($query) {
+            $query->where('status', 'approved');
+            })
+            ->distinct()->pluck('make');
+
+        $models = Car::whereHas('auction', function ($query) {
+            $query->where('status', 'approved');
+            })
+            ->distinct()->pluck('model');
+        
+
+        return view('auctions.index', compact('heroAuction','auctions', 'makes', 'models'));
     }
 
     /**
@@ -115,7 +141,19 @@ class AuctionController extends Controller
      */
     public function show(Auction $auction): View
     {
-        $auction->load(['car', 'user', 'bids.user', 'comment.user']);
+        $auction->load([
+            'car', 
+            'user', 
+            'bids' => function($query) {
+                $query->orderBy('amount', 'desc');
+            },
+            'bids.user',
+            'comment' => function($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'comment.user',
+        ]);
+
         return view('auctions.show', compact('auction'));
     }
 
@@ -178,14 +216,14 @@ class AuctionController extends Controller
             
             } elseif( $aStatus === 'pending' && $rStatus === 'denied') {
 
-                $aStatus = $rStatus;
+                $auction->status = $request->status;
                 $auction->start_time = NULL;
                 $auction->end_time = NULL;
 
             } elseif( $aStatus === 'approved' && $rStatus === 'finished') {
                 
                 // forced finish of an auction
-                $aStatus = $rStatus;
+                $auction->status = $request->status;
                 $auction->end_time = Carbon::now()->toDateTimeString(); 
 
             } else {

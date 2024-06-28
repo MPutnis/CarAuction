@@ -16,7 +16,8 @@ class DashboardController extends Controller
         // Get user's auctions
         $userAuctions = $user->auction;
         $bidAuctions = $user->bids->pluck('auction')->unique('id');
-        $allAuctions = Auction::all();
+        // Get all auctions in order of creation
+        $allAuctions = Auction::orderBy('created_at', 'asc')->get();
         
         return view('dashboard', [
             'auctions' => $userAuctions,

@@ -12,6 +12,25 @@
             :endTime="$auction->end_time"
         />
     </div>
+    <div class="gallery mb-4">
+        <h2 class="text-2xl font-bold mb-2">Gallery</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            @php
+                $imagePaths = json_decode($auction->car->image_paths, true);
+            @endphp
+            @if (empty($imagePaths))
+                <div class="hidden">
+                    
+                </div>
+            @else
+                @foreach(json_decode($auction->car->image_paths, true) as $image)
+                    <div class="image">
+                        <img src="{{ asset('storage/' . $image) }}" alt="Car Image" class="w-full h-auto">
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
     <div class="container mx-auto px-4">
         <h1 class="text-xl font-bold my-4">Edit Auction</h1>
         <form action="{{ route('auctions.update', $auction->id) }}" method="POST" class="w-full max-w-lg mb-4">
